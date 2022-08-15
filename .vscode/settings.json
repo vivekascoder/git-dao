@@ -6,6 +6,10 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "node_modules": true
+        "node_modules": true,
+        "deployments": true,
+        "typechain-types": true,
+        "cache": true,
+        "artifacts": true
     }
 }
