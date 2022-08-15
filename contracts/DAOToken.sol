@@ -4,13 +4,14 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
 contract DAOToken is ERC20Votes {
-    uint256 public s_maxSupply = 1000000000000000000000000;
+    // uint256 public s_maxSupply = 1000000000000000000000000;
 
-    constructor(string memory _name, string memory _symbol)
-        ERC20(_name, _symbol)
-        ERC20Permit(_name)
-    {
-        _mint(msg.sender, s_maxSupply);
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        uint256 _maxSupply
+    ) ERC20(_name, _symbol) ERC20Permit(_name) {
+        _mint(msg.sender, _maxSupply);
     }
 
     // The functions below are overrides required by Solidity.

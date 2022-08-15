@@ -3,6 +3,7 @@ import { DeployFunction } from "hardhat-deploy/types";
 import verify from "../utils";
 import { networkConfig, developmentChains } from "../hardhat.config";
 import { ethers } from "hardhat";
+import { BigNumber } from "ethers";
 
 const deployGovernanceToken: DeployFunction = async function (
   hre: HardhatRuntimeEnvironment
@@ -15,7 +16,7 @@ const deployGovernanceToken: DeployFunction = async function (
   log("Deploying GovernanceToken and waiting for confirmations...");
   const governanceToken = await deploy("DAOToken", {
     from: deployer,
-    args: ["Hello DAO Token", "HDT"],
+    args: ["Hello DAO Token", "HDT", "1000000000000000000000000"],
     log: true,
     // we need to wait if on a live network so we can verify properly
     waitConfirmations: networkConfig[network.name].blockConfirmations || 1,
