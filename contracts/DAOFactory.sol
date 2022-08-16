@@ -5,11 +5,43 @@ import "./DAO.sol";
 import "./DAOToken.sol";
 import "./DAOTimelock.sol";
 
+contract CreateDAOToken {
+    function createDAOToken(
+        string memory _name,
+        string memory _symbol,
+        uint256 _maxSupply
+    ) external returns (address) {
+        DAOToken dt = new DAOToken(_name, _symbol, _maxSupply);
+        return address(dt);
+    }
+}
+
+contract CreateDAO {
+    function createDAO(
+        address _daoToken,
+        address _daoTimelock,
+        uint256 _quorumPercentage,
+        uint256 _votingPeriod,
+        uint256 _votingDelay
+    ) external returns (address) {
+        DAO d = new DAO(
+            DAOToken(_daoToken),
+            DAOTimelock(payable(_daoTimelock)),
+            _quorumPercentage,
+            _votingPeriod,
+            _votingDelay
+        );
+        return address(d);
+    }
+}
+
 /**
  * Factory that creates other DAO contracts.
  */
 contract DAOFactory {
     address public admin;
+    address public daoTokenFactory;
+    address public createDAOContract;
     struct DAOInfo {
         address daoToken;
         address daoTimelock;
@@ -19,8 +51,14 @@ contract DAOFactory {
     // UserAddress => [DAOInfo1, DAOInfo2, ...]
     mapping(address => DAOInfo[]) public userDaos;
 
-    constructor(address _admin) {
+    constructor(
+        address _admin,
+        address _daoTokenFactory,
+        address _createDAOContract
+    ) {
         admin = _admin;
+        daoTokenFactory = _daoTokenFactory;
+        createDAOContract = _createDAOContract;
     }
 
     // Create DAOs
@@ -34,7 +72,8 @@ contract DAOFactory {
         uint256 _votingDelay
     ) external {
         // Create new token for DAO.
-        DAOToken dtoken = new DAOToken(
+        CreateDAOToken dtf = CreateDAOToken(daoTokenFactory);
+        address dtoken = dtf.createDAOToken(
             _daoTokenName,
             _daoTokenSymbol,
             _daoTokenSupply
@@ -48,9 +87,10 @@ contract DAOFactory {
         );
 
         // Create new Governance contract
-        DAO dao = new DAO(
+        CreateDAO cd = CreateDAO(createDAOContract);
+        address dao = cd.createDAO(
             dtoken,
-            dtimelock,
+            address(dtimelock),
             _quorumPercentage,
             _votingPeriod,
             _votingDelay
