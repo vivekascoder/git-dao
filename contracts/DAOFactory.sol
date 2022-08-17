@@ -5,6 +5,9 @@ import "./DAO.sol";
 import "./DAOToken.sol";
 import "./DAOTimelock.sol";
 
+/**
+ * Factory for DAO token contract.
+ */
 contract CreateDAOToken {
     function createDAOToken(
         string memory _name,
@@ -16,6 +19,9 @@ contract CreateDAOToken {
     }
 }
 
+/**
+ * Factory for DAO / Governance Contract
+ */
 contract CreateDAO {
     function createDAO(
         address _daoToken,
