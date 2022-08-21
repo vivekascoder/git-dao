@@ -95,3 +95,7 @@ Netspec format: https://docs.soliditylang.org/en/v0.8.15/natspec-format.html
 ## TODO
 
 - Maybe use EIP1167
+
+- Governance treasury
+  - https://forum.openzeppelin.com/t/how-to-add-funds-to-a-governor-treasury/22772
+  - https://forum.openzeppelin.com/t/gnosis-safe-governor-timelock-as-treasury/17064
