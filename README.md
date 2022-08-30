@@ -99,3 +99,27 @@ Netspec format: https://docs.soliditylang.org/en/v0.8.15/natspec-format.html
 - Governance treasury
   - https://forum.openzeppelin.com/t/how-to-add-funds-to-a-governor-treasury/22772
   - https://forum.openzeppelin.com/t/gnosis-safe-governor-timelock-as-treasury/17064
+
+## Deployed contracts
+
+```
+Generating typings for: 39 artifacts in dir: typechain-types for target: ethers-v5
+Successfully generated 63 typings!
+Compiled 35 Solidity files successfully
+Successfully submitted source code for contract
+contracts/DAOFactory.sol:CreateDAO at 0xe9b6357833C2cAd8b1FFe8FCbfEC6868f0693565
+for verification on the block explorer. Waiting for verification result...
+
+>> Successfully verified contract CreateDAO on Etherscan.
+https://mumbai.polygonscan.com/address/0xe9b6357833C2cAd8b1FFe8FCbfEC6868f0693565#code
++ Verifying contract...
+Nothing to compile
+No need to generate any newer typings.
+Successfully submitted source code for contract
+contracts/DAOFactory.sol:DAOFactory at 0xC8A7Ef44347f13683F624D1ef9736DE3e84D8e41
+for verification on the block explorer. Waiting for verification result...
+
+>> Successfully verified contract DAOFactory on Etherscan.
+https://mumbai.polygonscan.com/address/0xC8A7Ef44347f13683F624D1ef9736DE3e84D8e41#code
+✨  Done in 138.80s.
+```

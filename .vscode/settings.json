@@ -9,8 +9,8 @@
     "node_modules": true,
     "deployments": true,
     "typechain-types": true,
-    "cache": true,
-    "artifacts": true
+    "cache": true
+    // "artifacts": true
   },
   "editor.tabSize": 2
 }

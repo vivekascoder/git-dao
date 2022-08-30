@@ -45,6 +45,14 @@ contract CreateDAO {
  * Factory that creates other DAO contracts.
  */
 contract DAOFactory {
+    // Events
+    event DAOCreated(
+        address daoToken,
+        address daoTimelock,
+        address dao,
+        address creator
+    );
+
     address public admin;
     address public daoTokenFactory;
     address public createDAOContract;
@@ -105,5 +113,6 @@ contract DAOFactory {
         // Save the info
         DAOInfo[] storage dinfo = userDaos[msg.sender];
         dinfo.push(DAOInfo(address(dtoken), address(dtimelock), address(dao)));
+        emit DAOCreated(dtoken, address(dtimelock), dao, msg.sender);
     }
 }

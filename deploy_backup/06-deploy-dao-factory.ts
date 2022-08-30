@@ -43,16 +43,11 @@ const deployDAOFactory: DeployFunction = async function (
   // Verify on etherscan
   if (
     !developmentChains.includes(network.name) &&
-    process.env.POLYGONSCAN_TOKEN
+    process.env.ETHERSCAN_API_KEY
   ) {
-    console.log("Verifying as well...");
     await verify(createDaoToken.address, []);
     await verify(createDao.address, []);
-    await verify(daoFactory.address, [
-      deployer,
-      createDaoToken.address,
-      createDao.address,
-    ]);
+    await verify(daoFactory.address, []);
   }
 };
 

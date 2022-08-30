@@ -24,6 +24,7 @@ export const networkConfig: networkConfigInfo = {
   hardhat: {},
   // Price Feed Address, values can be obtained at https://docs.chain.link/docs/reference-contracts
   // Default one is ETH/USD contract on Kovan
+  polygonTestnet: {},
   kovan: {
     blockConfirmations: 6,
   },
@@ -66,9 +67,14 @@ const config: HardhatUserConfig = {
       accounts: [PRIVATE_KEY],
       chainId: 4,
     },
+    polygonTestnet: {
+      url: process.env.ALCHEMY_POLYGON_TESTNET || "",
+      accounts: [PRIVATE_KEY],
+      chainId: 80001,
+    },
   },
   etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
+    apiKey: process.env.POLYGONSCAN_TOKEN,
   },
   gasReporter: {
     enabled: true,
