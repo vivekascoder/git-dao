@@ -62,10 +62,13 @@ contract DAOFactory {
         address daoToken;
         address daoTimelock;
         address dao;
+        bool exists;
     }
 
     // UserAddress => [DAOInfo1, DAOInfo2, ...]
-    mapping(address => DAOInfo[]) public userDaos;
+    mapping(string => DAOInfo) public GithubRepoNameToDAOInfo;
+
+    mapping(address => mapping(string => DAOInfo)) public userDaos;
 
     constructor(
         address _admin,
@@ -78,6 +81,7 @@ contract DAOFactory {
     }
 
     // TODO: Some helper functions
+    // function getDaoInfo
 
     // Create DAOs
     function createDAO(
@@ -91,6 +95,12 @@ contract DAOFactory {
         string memory _githubUrl, // vivek/git-dao
         string memory _githubId // Some unique identifier from github
     ) external {
+        // TODO: Check if the user has already created repo for this url.
+        DAOInfo storage dinfo = userDaos[msg.sender][_githubUrl];
+        if (dinfo.exists) {
+            revert("Looks like the dao already exists for this repo.");
+        }
+        // NOTE: This is v. alpha in future this process will be done my a signer to make it more decentralized.
         // Create new token for DAO.
         CreateDAOToken dtf = CreateDAOToken(daoTokenFactory);
         address dtoken = dtf.createDAOToken(
@@ -117,8 +127,11 @@ contract DAOFactory {
         );
 
         // Save the info
-        DAOInfo[] storage dinfo = userDaos[msg.sender];
-        dinfo.push(DAOInfo(address(dtoken), address(dtimelock), address(dao)));
+        dinfo.daoToken = address(dtoken);
+        dinfo.daoTimelock = address(dtimelock);
+        dinfo.dao = address(dao);
+        dinfo.exists = true;
+
         emit DAOCreated(
             dtoken,
             address(dtimelock),
