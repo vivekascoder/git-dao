@@ -50,7 +50,9 @@ contract DAOFactory {
         address daoToken,
         address daoTimelock,
         address dao,
-        address creator
+        address creator,
+        string githubName,
+        string githubId
     );
 
     address public admin;
@@ -75,6 +77,8 @@ contract DAOFactory {
         createDAOContract = _createDAOContract;
     }
 
+    // TODO: Some helper functions
+
     // Create DAOs
     function createDAO(
         string memory _daoTokenName,
@@ -83,7 +87,9 @@ contract DAOFactory {
         uint256 _minDelay,
         uint256 _quorumPercentage,
         uint256 _votingPeriod,
-        uint256 _votingDelay
+        uint256 _votingDelay,
+        string memory _githubUrl, // vivek/git-dao
+        string memory _githubId // Some unique identifier from github
     ) external {
         // Create new token for DAO.
         CreateDAOToken dtf = CreateDAOToken(daoTokenFactory);
@@ -113,6 +119,13 @@ contract DAOFactory {
         // Save the info
         DAOInfo[] storage dinfo = userDaos[msg.sender];
         dinfo.push(DAOInfo(address(dtoken), address(dtimelock), address(dao)));
-        emit DAOCreated(dtoken, address(dtimelock), dao, msg.sender);
+        emit DAOCreated(
+            dtoken,
+            address(dtimelock),
+            dao,
+            msg.sender,
+            _githubUrl,
+            _githubId
+        );
     }
 }
