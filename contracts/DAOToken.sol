@@ -32,7 +32,7 @@ contract DAOToken is ERC20Votes, Ownable {
     }
 
     function sendToDAO() external onlyOwner {
-        require(daoContract == address(0), "Address is 0 address.");
+        require(daoContract != address(0), "Address is 0 address.");
         require(isMinted == false, "Already minted.");
         // Mint the rest in the treasurey i.e DAO contract.
         _mint(daoContract, amoutToMintForTreasury);

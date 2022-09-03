@@ -13,16 +13,9 @@ contract CreateDAOToken {
         string memory _name,
         string memory _symbol,
         uint256 _maxSupply,
-        uint256 _adminPercent,
-        address _daoContract
+        uint256 _adminPercent
     ) external returns (address) {
-        DAOToken dt = new DAOToken(
-            _name,
-            _symbol,
-            _maxSupply,
-            _adminPercent,
-            _daoContract
-        );
+        DAOToken dt = new DAOToken(_name, _symbol, _maxSupply, _adminPercent);
         return address(dt);
     }
 }
@@ -122,8 +115,7 @@ contract DAOFactory {
             _daoTokenName,
             _daoTokenSymbol,
             _daoTokenSupply,
-            _percentForAdmin,
-            address(this)
+            _percentForAdmin
         );
 
         // Create new timelock for DAO
