@@ -2,21 +2,41 @@
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
+import "hardhat/console.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract DAOToken is ERC20Votes {
-    // uint256 public s_maxSupply = 1000000000000000000000000;
+contract DAOToken is ERC20Votes, Ownable {
+    uint256 public amoutToMintForTreasury;
+    address public daoContract;
+    bool public isMinted = false;
 
     constructor(
         string memory _name,
         string memory _symbol,
         uint256 _maxSupply,
-        uint256 _adminPercent,
-        address _daoContract
+        uint256 _adminPercent
     ) ERC20(_name, _symbol) ERC20Permit(_name) {
         // Mint adminPercent% of tokens for admin.
         _mint(msg.sender, (_adminPercent * _maxSupply) / 100);
+        amoutToMintForTreasury =
+            _maxSupply -
+            (_adminPercent * _maxSupply) /
+            100;
+        // Admin should be tx.origin as this represents the address of the user.
+        console.log("Transaction Origin: %d", tx.origin);
+        _transferOwnership(tx.origin);
+    }
+
+    function setDaoContract(address _dao) external onlyOwner {
+        daoContract = _dao;
+    }
+
+    function sendToDAO() external onlyOwner {
+        require(daoContract == address(0), "Address is 0 address.");
+        require(isMinted == false, "Already minted.");
         // Mint the rest in the treasurey i.e DAO contract.
-        _mint(_daoContract, (_maxSupply * (100 - _adminPercent)) / 100);
+        _mint(daoContract, amoutToMintForTreasury);
+        isMinted = true;
     }
 
     // The functions below are overrides required by Solidity.

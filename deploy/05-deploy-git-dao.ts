@@ -13,25 +13,31 @@ const deployBox: DeployFunction = async function (
   const { deployer } = await getNamedAccounts();
   log("----------------------------------------------------");
   log("Deploying Box and waiting for confirmations...");
-  const box = await deploy("Box", {
+
+  const dao = await ethers.getContract("DAO");
+  const daoTimelock = await ethers.getContract("DAOTimelock");
+  const daoToken = await ethers.getContract("DAOToken");
+
+  const gitDao = await deploy("GitDAO", {
     from: deployer,
-    args: [],
+    args: [dao.address, daoTimelock.address, daoToken.address],
     log: true,
     // we need to wait if on a live network so we can verify properly
     waitConfirmations: networkConfig[network.name].blockConfirmations || 1,
   });
-  log(`Box at ${box.address}`);
+  log(`Box at ${gitDao.address}`);
   if (
     !developmentChains.includes(network.name) &&
     process.env.ETHERSCAN_API_KEY
   ) {
-    await verify(box.address, []);
+    await verify(gitDao.address, []);
   }
-  const boxContract = await ethers.getContractAt("Box", box.address);
-  const timeLock = await ethers.getContract("DAOTimelock");
-  const transferTx = await boxContract.transferOwnership(timeLock.address);
+  const gitDaoContract = await ethers.getContractAt("GitDAO", gitDao.address);
+  const transferTx = await gitDaoContract.transferOwnership(
+    daoTimelock.address
+  );
   await transferTx.wait(1);
 };
 
 export default deployBox;
-deployBox.tags = ["all", "box"];
+deployBox.tags = ["all", "GitDAO"];
