@@ -9,9 +9,14 @@ contract DAOToken is ERC20Votes {
     constructor(
         string memory _name,
         string memory _symbol,
-        uint256 _maxSupply
+        uint256 _maxSupply,
+        uint256 _adminPercent,
+        address _daoContract
     ) ERC20(_name, _symbol) ERC20Permit(_name) {
-        _mint(msg.sender, _maxSupply);
+        // Mint adminPercent% of tokens for admin.
+        _mint(msg.sender, (_adminPercent * _maxSupply) / 100);
+        // Mint the rest in the treasurey i.e DAO contract.
+        _mint(_daoContract, (_maxSupply * (100 - _adminPercent)) / 100);
     }
 
     // The functions below are overrides required by Solidity.

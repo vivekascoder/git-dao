@@ -1,31 +1,44 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./DAOToken.sol";
 
-contract GitDAO {
-    mapping(string => address) public emailToAddress;
+contract GitDAO is Ownable {
+    // Events
+    event UserRewarded(address user, uint256 amount);
 
-    constructor() {}
+    // Storage.
+    struct DaoInfo {
+        address dao;
+        address daoTimelock;
+        address daoToken;
+    }
+    DaoInfo dao;
 
-    function registerUser(string memory _email) external {
-        require(emailToAddress[_email] == address(0), "USER_ALREADY_EXISTS");
-        emailToAddress[_email] = msg.sender;
+    constructor(
+        address _dao,
+        address _daoTimelock,
+        address _daoToken
+    ) {
+        dao.dao = _dao;
+        dao.daoTimelock = _daoTimelock;
+        dao.daoToken = _daoToken;
     }
 
-    function changeAddress(string memory _oldEmail, address _address) external {
-        require(
-            emailToAddress[_oldEmail] != address(0),
-            "USER_DOES_NOT_EXISTS"
-        );
-        emailToAddress[_oldEmail] = _address;
+    function getDaoInfo() public view returns (DaoInfo memory) {
+        return dao;
     }
 
-    function rewardIndivisual(string memory _email, uint256 _tokenAmount)
+    function rewardIndivisual(address _userAddress, uint256 _tokenAmount)
         external
+        onlyOwner
     {
-        address userAddress = emailToAddress[_email];
-        require(userAddress != address(0), "USER_DOES_NOT_EXISTS");
+        require(_userAddress != address(0), "USER_DOES_NOT_EXISTS");
 
         // Send money from treasurey.
+        DAOToken dt = DAOToken(dao.daoToken);
+        dt.transfer(_userAddress, _tokenAmount);
+        emit UserRewarded(_userAddress, _tokenAmount);
     }
 
     function buyTokens(

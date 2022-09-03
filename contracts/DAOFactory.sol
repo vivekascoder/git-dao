@@ -12,9 +12,17 @@ contract CreateDAOToken {
     function createDAOToken(
         string memory _name,
         string memory _symbol,
-        uint256 _maxSupply
+        uint256 _maxSupply,
+        uint256 _adminPercent,
+        address _daoContract
     ) external returns (address) {
-        DAOToken dt = new DAOToken(_name, _symbol, _maxSupply);
+        DAOToken dt = new DAOToken(
+            _name,
+            _symbol,
+            _maxSupply,
+            _adminPercent,
+            _daoContract
+        );
         return address(dt);
     }
 }
@@ -64,6 +72,7 @@ contract DAOFactory {
         address dao;
         bool exists;
     }
+    uint256 maxPercentForAdmin;
 
     // UserAddress => [DAOInfo1, DAOInfo2, ...]
     mapping(string => DAOInfo) public GithubRepoNameToDAOInfo;
@@ -73,11 +82,13 @@ contract DAOFactory {
     constructor(
         address _admin,
         address _daoTokenFactory,
-        address _createDAOContract
+        address _createDAOContract,
+        uint256 _maxPercentForAdmin
     ) {
         admin = _admin;
         daoTokenFactory = _daoTokenFactory;
         createDAOContract = _createDAOContract;
+        maxPercentForAdmin = _maxPercentForAdmin;
     }
 
     // TODO: Some helper functions
@@ -88,6 +99,7 @@ contract DAOFactory {
         string memory _daoTokenName,
         string memory _daoTokenSymbol,
         uint256 _daoTokenSupply,
+        uint256 _percentForAdmin,
         uint256 _minDelay,
         uint256 _quorumPercentage,
         uint256 _votingPeriod,
@@ -100,13 +112,18 @@ contract DAOFactory {
         if (dinfo.exists) {
             revert("Looks like the dao already exists for this repo.");
         }
+        if (_percentForAdmin > maxPercentForAdmin) {
+            revert("You can't reserve that much for yourself.");
+        }
         // NOTE: This is v. alpha in future this process will be done my a signer to make it more decentralized.
         // Create new token for DAO.
         CreateDAOToken dtf = CreateDAOToken(daoTokenFactory);
         address dtoken = dtf.createDAOToken(
             _daoTokenName,
             _daoTokenSymbol,
-            _daoTokenSupply
+            _daoTokenSupply,
+            _percentForAdmin,
+            address(this)
         );
 
         // Create new timelock for DAO
