@@ -16,6 +16,14 @@ import { ethers } from "hardhat";
   console.log(`> Expected owner: ${owner.address}`);
 
   // Set the dao.
+  // TIP: Should write test and not this shit, but ain't got time
+  try {
+    await (await token.connect(dao).setDaoContract(dao.address)).wait(1);
+  } catch (e) {
+    console.log(`> Error encounted as expected: ${(e as Error).message}`);
+  }
+
+  // This should work.
   await (await token.setDaoContract(dao.address)).wait(1);
 
   console.log(`> Balance Before: ${await token.balanceOf(dao.address)}`);

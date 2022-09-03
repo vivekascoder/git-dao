@@ -45,11 +45,15 @@ contract GitDAO is Ownable {
         external
         onlyOwner
     {
+        console.log("Origin: %s", tx.origin);
+        console.log("Sender: %s", msg.sender);
+        console.log("Owner: %s", owner());
         // msg.sender is dao contract.
         require(_userAddress != address(0), "USER_DOES_NOT_EXISTS");
 
         // Send money from treasurey.
-        DAOToken dt = DAOToken(dao.daoToken);
+        IERC20 dt = IERC20(dao.daoToken);
+        console.log("Balance Of this %s", dt.balanceOf(address(this)));
         dt.transfer(_userAddress, _tokenAmount);
         emit UserRewarded(_userAddress, _tokenAmount);
     }

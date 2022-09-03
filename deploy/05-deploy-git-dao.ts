@@ -37,6 +37,14 @@ const deployBox: DeployFunction = async function (
     daoTimelock.address
   );
   await transferTx.wait(1);
+  // Mint into the treasury.
+  const setDaoTx = await daoToken.setDaoContract(gitDao.address);
+  await setDaoTx.wait(1);
+  const mintTx = await daoToken.sendToDAO();
+  await mintTx.wait(1);
+  console.log(
+    `> Treasury Balance: ${await daoToken.balanceOf(gitDao.address)}`
+  );
 };
 
 export default deployBox;

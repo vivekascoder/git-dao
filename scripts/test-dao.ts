@@ -10,20 +10,30 @@ import { moveBlocks, moveTime } from "../utils";
 const PROPOSAL_DESCRIPTION = "Just wanna vote";
 
 const main = async () => {
+  const [owner, bob] = await ethers.getSigners();
   const dao = await ethers.getContract("DAO");
-  const box = await ethers.getContract("Box");
-  console.log(`Current Value: ${await box.retrieve()}`);
+  const gitDao = await ethers.getContract("GitDAO");
+  const daoToken = await ethers.getContract("DAOToken");
+
+  console.log(
+    `> Token balance of bob before proposal: ${await daoToken.balanceOf(
+      bob.address
+    )}`
+  );
 
   // # Testing the flow of DAO.
 
   // ## Propose
 
-  // Encoding `store(77)` function call.
-  const encodedFunctionCall = box.interface.encodeFunctionData("store", [77]);
+  // Reward `bob` with 10 tokens
+  const encodedFunctionCall = gitDao.interface.encodeFunctionData(
+    "rewardIndivisual",
+    [bob.address, ethers.utils.parseEther("10")]
+  );
 
   // Proposing the proposal
   const proposeTx = await dao.propose(
-    [box.address],
+    [gitDao.address],
     [0],
     [encodedFunctionCall],
     PROPOSAL_DESCRIPTION
@@ -71,7 +81,7 @@ const main = async () => {
   );
 
   const hash = await dao.hashProposal(
-    [box.address],
+    [gitDao.address],
     [0],
     [encodedFunctionCall],
     descriptionHash
@@ -80,7 +90,7 @@ const main = async () => {
 
   // Queue transaciton.
   const queueTx = await dao.queue(
-    [box.address],
+    [gitDao.address],
     [0],
     [encodedFunctionCall],
     descriptionHash
@@ -94,17 +104,21 @@ const main = async () => {
   }
 
   // Executing the proposal
+  console.log(`> Starting the execution of proposal section`);
   const executeTx = await dao.execute(
-    [box.address],
+    [gitDao.address],
     [0],
     [encodedFunctionCall],
     descriptionHash
   );
   await executeTx.wait(1);
 
-  // Checking the new value in Box contract.
-  const boxNewValue = await box.retrieve();
-  console.log("Value: ", boxNewValue.toString());
+  // Checking stuff after execution
+  console.log(
+    `> Token balance of bob after proposal: ${await daoToken.balanceOf(
+      bob.address
+    )}`
+  );
 };
 
 main()

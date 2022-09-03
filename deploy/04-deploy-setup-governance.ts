@@ -18,6 +18,7 @@ const setupContracts: DeployFunction = async function (
   const governanceToken = await ethers.getContract("DAOToken", deployer);
   const timeLock = await ethers.getContract("DAOTimelock", deployer);
   const governor = await ethers.getContract("DAO", deployer);
+  // const gitDao = await ethers.getContract("GitDAO", deployer);
 
   log("----------------------------------------------------");
   log("Setting up contracts for roles...");

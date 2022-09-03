@@ -16,7 +16,7 @@ const deployGovernanceToken: DeployFunction = async function (
   log("Deploying GovernanceToken and waiting for confirmations...");
   const governanceToken = await deploy("DAOToken", {
     from: deployer,
-    args: ["Hello DAO Token", "HDT", "1000000000000000000000000"],
+    args: ["Hello DAO Token", "HDT", "1000000000000000000000000", 20],
     log: true,
     // we need to wait if on a live network so we can verify properly
     waitConfirmations: networkConfig[network.name].blockConfirmations || 1,
