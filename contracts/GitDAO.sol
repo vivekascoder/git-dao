@@ -25,15 +25,23 @@ contract GitDAO is Ownable {
         address daoToken;
     }
     DaoInfo dao;
+    string public githubUrl;
+    string public githubId;
 
     constructor(
         address _dao,
         address _daoTimelock,
-        address _daoToken
+        address _daoToken,
+        string memory _githubUrl,
+        string memory _githubId
     ) {
         dao.dao = _dao;
         dao.daoTimelock = _daoTimelock;
         dao.daoToken = _daoToken;
+
+        // Github metadata.
+        githubId = _githubId;
+        githubUrl = _githubUrl;
     }
 
     function getDaoInfo() public view returns (DaoInfo memory) {

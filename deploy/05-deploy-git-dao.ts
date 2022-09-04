@@ -20,7 +20,13 @@ const deployBox: DeployFunction = async function (
 
   const gitDao = await deploy("GitDAO", {
     from: deployer,
-    args: [dao.address, daoTimelock.address, daoToken.address],
+    args: [
+      dao.address,
+      daoTimelock.address,
+      daoToken.address,
+      "vivekascoder/git-dao",
+      "3f3rf3w",
+    ],
     log: true,
     // we need to wait if on a live network so we can verify properly
     waitConfirmations: networkConfig[network.name].blockConfirmations || 1,

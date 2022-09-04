@@ -24,7 +24,7 @@ contract DAOToken is ERC20Votes, Ownable {
             100;
         // Admin should be tx.origin as this represents the address of the user.
         console.log("Transaction Origin: %d", tx.origin);
-        _transferOwnership(tx.origin);
+        // _transferOwnership(tx.origin);
     }
 
     function setDaoContract(address _dao) external onlyOwner {

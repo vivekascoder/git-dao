@@ -4,43 +4,13 @@ pragma solidity ^0.8.9;
 import "./DAO.sol";
 import "./DAOToken.sol";
 import "./DAOTimelock.sol";
+import "./GitDAO.sol";
 
-/**
- * Factory for DAO token contract.
- */
-contract CreateDAOToken {
-    function createDAOToken(
-        string memory _name,
-        string memory _symbol,
-        uint256 _maxSupply,
-        uint256 _adminPercent
-    ) external returns (address) {
-        DAOToken dt = new DAOToken(_name, _symbol, _maxSupply, _adminPercent);
-        return address(dt);
-    }
-}
-
-/**
- * Factory for DAO / Governance Contract
- */
-contract CreateDAO {
-    function createDAO(
-        address _daoToken,
-        address _daoTimelock,
-        uint256 _quorumPercentage,
-        uint256 _votingPeriod,
-        uint256 _votingDelay
-    ) external returns (address) {
-        DAO d = new DAO(
-            DAOToken(_daoToken),
-            DAOTimelock(payable(_daoTimelock)),
-            _quorumPercentage,
-            _votingPeriod,
-            _votingDelay
-        );
-        return address(d);
-    }
-}
+// Import all the factories.
+import "./factories/CreateDAO.sol";
+import "./factories/CreateDAOTimelock.sol";
+import "./factories/CreateDAOToken.sol";
+import "./factories/CreateGitDAO.sol";
 
 /**
  * Factory that creates other DAO contracts.
@@ -48,17 +18,25 @@ contract CreateDAO {
 contract DAOFactory {
     // Events
     event DAOCreated(
-        address daoToken,
-        address daoTimelock,
-        address dao,
-        address creator,
-        string githubName,
-        string githubId
+        DAOInfo dinfo,
+        address[2] gitDaoCreator,
+        string gitUrl,
+        string gitId
     );
+    // address gitDao,
+    //     address creator,
+    // string githubName
 
     address public admin;
-    address public daoTokenFactory;
-    address public createDAOContract;
+
+    struct Factories {
+        address daoTokenFactory;
+        address createDAOContract;
+        address createDAOTimelock;
+        address createGitDAO;
+    }
+    Factories public factories;
+
     struct DAOInfo {
         address daoToken;
         address daoTimelock;
@@ -76,12 +54,16 @@ contract DAOFactory {
         address _admin,
         address _daoTokenFactory,
         address _createDAOContract,
+        address _createDAOTimelock,
+        address _createGitDAO,
         uint256 _maxPercentForAdmin
     ) {
         admin = _admin;
-        daoTokenFactory = _daoTokenFactory;
-        createDAOContract = _createDAOContract;
+        factories.daoTokenFactory = _daoTokenFactory;
+        factories.createDAOContract = _createDAOContract;
         maxPercentForAdmin = _maxPercentForAdmin;
+        factories.createDAOTimelock = _createDAOTimelock;
+        factories.createGitDAO = _createGitDAO;
     }
 
     // TODO: Some helper functions
@@ -110,7 +92,7 @@ contract DAOFactory {
         }
         // NOTE: This is v. alpha in future this process will be done my a signer to make it more decentralized.
         // Create new token for DAO.
-        CreateDAOToken dtf = CreateDAOToken(daoTokenFactory);
+        CreateDAOToken dtf = CreateDAOToken(factories.daoTokenFactory);
         address dtoken = dtf.createDAOToken(
             _daoTokenName,
             _daoTokenSymbol,
@@ -119,33 +101,49 @@ contract DAOFactory {
         );
 
         // Create new timelock for DAO
-        DAOTimelock dtimelock = new DAOTimelock(
-            _minDelay,
-            new address[](0),
-            new address[](0)
-        );
+        CreateDAOTimelock cdt = CreateDAOTimelock(factories.createDAOTimelock);
+        address dtimelock = cdt.createDAOTimelock(_minDelay);
 
         // Create new Governance contract
-        CreateDAO cd = CreateDAO(createDAOContract);
+        CreateDAO cd = CreateDAO(factories.createDAOContract);
         address dao = cd.createDAO(
             dtoken,
-            address(dtimelock),
+            dtimelock,
             _quorumPercentage,
             _votingPeriod,
             _votingDelay
         );
 
         // Save the info
-        dinfo.daoToken = address(dtoken);
-        dinfo.daoTimelock = address(dtimelock);
-        dinfo.dao = address(dao);
+        dinfo.daoToken = dtoken;
+        dinfo.daoTimelock = dtimelock;
+        dinfo.dao = dao;
         dinfo.exists = true;
 
+        // Post deployment step.
+        DAOTimelock dtimelockObject = DAOTimelock(payable(dtimelock));
+        dtimelockObject.grantRole(dtimelockObject.PROPOSER_ROLE(), dao); // DAO can propose.
+        dtimelockObject.grantRole(dtimelockObject.EXECUTOR_ROLE(), address(0));
+        dtimelockObject.revokeRole(
+            dtimelockObject.TIMELOCK_ADMIN_ROLE(),
+            msg.sender
+        ); // Admin's power gone.
+
+        CreateGitDAO cgd = CreateGitDAO(factories.createGitDAO);
+        GitDAO gd = cgd.createGitDAO(
+            [dao, dtimelock, dtoken],
+            _githubUrl,
+            _githubId
+        );
+
+        // Mint to treasury.
+        DAOToken dto = DAOToken(dtoken);
+        dto.setDaoContract(address(gd));
+        dto.sendToDAO();
+
         emit DAOCreated(
-            dtoken,
-            address(dtimelock),
-            dao,
-            msg.sender,
+            dinfo,
+            [address(gd), msg.sender],
             _githubUrl,
             _githubId
         );
