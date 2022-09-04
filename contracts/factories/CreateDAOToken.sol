@@ -11,9 +11,11 @@ contract CreateDAOToken {
         string memory _name,
         string memory _symbol,
         uint256 _maxSupply,
-        uint256 _adminPercent
+        uint256 _adminPercent,
+        address _daoFactory
     ) external returns (address) {
         DAOToken dt = new DAOToken(_name, _symbol, _maxSupply, _adminPercent);
+        dt.transferOwnership(_daoFactory);
         return address(dt);
     }
 }

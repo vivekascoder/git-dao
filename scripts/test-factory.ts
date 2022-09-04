@@ -16,10 +16,13 @@ async function main() {
     "My Awesome DAO",
     "MAD",
     ethers.utils.parseEther("1"),
+    20,
     MIN_DELAY,
     QUORUM_PERCENTAGE,
     VOTING_PERIOD,
-    VOTING_DELAY
+    VOTING_DELAY,
+    "vivekascoder/git-dao",
+    "3d3r3"
   );
   await tx.wait(1);
   console.log("Deployed.");

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/governance/TimelockController.sol";
+import "hardhat/console.sol";
 
 contract DAOTimelock is TimelockController {
     // minDelay is how long you have to wait before executing
@@ -11,5 +12,7 @@ contract DAOTimelock is TimelockController {
         uint256 minDelay,
         address[] memory proposers,
         address[] memory executors
-    ) TimelockController(minDelay, proposers, executors) {}
+    ) TimelockController(minDelay, proposers, executors) {
+        console.log("Constructor is running....");
+    }
 }

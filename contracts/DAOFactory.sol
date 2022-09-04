@@ -23,9 +23,6 @@ contract DAOFactory {
         string gitUrl,
         string gitId
     );
-    // address gitDao,
-    //     address creator,
-    // string githubName
 
     address public admin;
 
@@ -97,12 +94,13 @@ contract DAOFactory {
             _daoTokenName,
             _daoTokenSymbol,
             _daoTokenSupply,
-            _percentForAdmin
+            _percentForAdmin,
+            address(this)
         );
 
         // Create new timelock for DAO
         CreateDAOTimelock cdt = CreateDAOTimelock(factories.createDAOTimelock);
-        address dtimelock = cdt.createDAOTimelock(_minDelay);
+        address dtimelock = cdt.createDAOTimelock(_minDelay, address(this));
 
         // Create new Governance contract
         CreateDAO cd = CreateDAO(factories.createDAOContract);

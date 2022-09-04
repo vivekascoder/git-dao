@@ -20,6 +20,8 @@ contract CreateGitDAO {
             _gitUrl,
             _gitId
         );
+        // Transfer ownership to timelock
+        gd.transferOwnership(daoAddresses[1]);
         return gd;
     }
 }
