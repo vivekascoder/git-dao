@@ -23,6 +23,22 @@ const deployDAOFactory: DeployFunction = async function (
   });
   log(`CreateDAOToken at ${createDaoToken.address}`);
 
+  const createGitDao = await deploy("CreateGitDAO", {
+    from: deployer,
+    args: [],
+    log: true,
+    waitConfirmations: networkConfig[network.name].blockConfirmations || 1,
+  });
+  log(`CreateDAOToken at ${createGitDao.address}`);
+
+  const createTimelock = await deploy("CreateDAOTimelock", {
+    from: deployer,
+    args: [],
+    log: true,
+    waitConfirmations: networkConfig[network.name].blockConfirmations || 1,
+  });
+  log(`CreateDAOToken at ${createTimelock.address}`);
+
   log("Deploying CreateDAO contract");
   const createDao = await deploy("CreateDAO", {
     from: deployer,
@@ -33,9 +49,17 @@ const deployDAOFactory: DeployFunction = async function (
   log(`CreateDAO at ${createDao.address}`);
 
   log("Deploying DAOFactory");
+  const args = [
+    deployer,
+    createDaoToken.address,
+    createDao.address,
+    createTimelock.address,
+    createGitDao.address,
+    25,
+  ];
   const daoFactory = await deploy("DAOFactory", {
     from: deployer,
-    args: [deployer, createDaoToken.address, createDao.address],
+    args: args,
     waitConfirmations: networkConfig[network.name].blockConfirmations || 1,
   });
   log(`DAOFactory at ${daoFactory.address}`);
@@ -48,11 +72,7 @@ const deployDAOFactory: DeployFunction = async function (
     console.log("Verifying as well...");
     await verify(createDaoToken.address, []);
     await verify(createDao.address, []);
-    await verify(daoFactory.address, [
-      deployer,
-      createDaoToken.address,
-      createDao.address,
-    ]);
+    await verify(daoFactory.address, args);
   }
 };
 

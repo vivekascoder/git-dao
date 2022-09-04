@@ -24,7 +24,7 @@ contract GitDAO is Ownable {
         address daoTimelock;
         address daoToken;
     }
-    DaoInfo dao;
+    DaoInfo public dao;
     string public githubUrl;
     string public githubId;
 
