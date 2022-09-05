@@ -10,6 +10,7 @@ import {
 async function main() {
   const daoFactory = await ethers.getContract("DAOFactory");
   console.log("Dao FActory Admin", await daoFactory.admin());
+  const [owner] = await ethers.getSigners();
 
   // Deploy new DAO
   const tx = await daoFactory.createDAO(
@@ -24,8 +25,10 @@ async function main() {
     "vivekascoder/git-dao",
     "3d3r3"
   );
+  console.log(tx);
   await tx.wait(1);
   console.log("Deployed.");
+  console.log(`> Owner's balance ${owner.address}`);
 }
 
 main()

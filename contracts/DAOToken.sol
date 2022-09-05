@@ -17,13 +17,14 @@ contract DAOToken is ERC20Votes, Ownable {
         uint256 _adminPercent
     ) ERC20(_name, _symbol) ERC20Permit(_name) {
         // Mint adminPercent% of tokens for admin.
-        _mint(msg.sender, (_adminPercent * _maxSupply) / 100);
+        _mint(tx.origin, (_adminPercent * _maxSupply) / 100);
         amoutToMintForTreasury =
             _maxSupply -
             (_adminPercent * _maxSupply) /
             100;
         // Admin should be tx.origin as this represents the address of the user.
-        console.log("Transaction Origin: %d", tx.origin);
+        // console.log("Transaction Origin: %s", tx.origin);
+        console.log("Origin's balance: %s", super.balanceOf(tx.origin));
         // _transferOwnership(tx.origin);
     }
 
