@@ -16,21 +16,39 @@ const QUORUM_TOTAL = BigNumber.from(
 );
 
 const main = async () => {
-  const [owner, bob, alice] = await ethers.getSigners();
+  const [owner, bob, alice, ram] = await ethers.getSigners();
   const dao = await ethers.getContract("DAO");
   const gitDao = await ethers.getContract("GitDAO");
   const daoToken = await ethers.getContract("DAOToken");
-
-  console.log(
-    "owner is the admin of daoToken",
-    owner.address,
-    await daoToken.owner()
+  const Token = await ethers.getContractFactory("DAOToken");
+  const token = await Token.deploy(
+    "Super Token",
+    "SDT",
+    ethers.utils.parseEther("1000000"),
+    20
   );
 
   console.log(
-    `> Token balance of bob before proposal: ${await daoToken.balanceOf(
-      owner.address
-    )}`
+    "Admin balance of new token: ",
+    (await token.balanceOf(owner.address)).toString()
+  );
+
+  console.log(
+    "GitDAO balance of dao token: ",
+    (await daoToken.balanceOf(gitDao.address)).toString()
+  );
+
+  await (
+    await token.transfer(ram.address, ethers.utils.parseEther("1000"))
+  ).wait(1);
+
+  console.log(
+    `> Ram owns ${(await token.balanceOf(ram.address)).toString()} new token.`
+  );
+  console.log(
+    `> Ram owns ${(
+      await daoToken.balanceOf(ram.address)
+    ).toString()} dao token.`
   );
 
   console.log(
@@ -54,9 +72,13 @@ const main = async () => {
   // ## Propose
 
   // Reward `bob` with 10 tokens
+  await await token
+    .connect(ram)
+    .approve(gitDao.address, ethers.utils.parseEther("20"));
+  console.log(`Ram approved 20 new tokens to gitDAO`);
   const encodedFunctionCall = gitDao.interface.encodeFunctionData(
-    "rewardIndivisual",
-    [bob.address, ethers.utils.parseEther("10")]
+    "buyTokensWithERC20",
+    [ram.address, ethers.utils.parseEther("10"), 2, token.address]
   );
 
   // Proposing the proposal
@@ -170,6 +192,15 @@ const main = async () => {
     `> Token balance of bob after proposal: ${await daoToken.balanceOf(
       bob.address
     )}`
+  );
+
+  console.log(
+    `> Ram owns ${(await token.balanceOf(ram.address)).toString()} new token.`
+  );
+  console.log(
+    `> Ram owns ${(
+      await daoToken.balanceOf(ram.address)
+    ).toString()} dao token.`
   );
 };
 

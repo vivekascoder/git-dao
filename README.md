@@ -103,47 +103,51 @@ Netspec format: https://docs.soliditylang.org/en/v0.8.15/natspec-format.html
 ## Deployed contracts
 
 ```
+yarn run v1.22.19
+$ /Users/vivekascoder/code/git_dao/node_modules/.bin/hardhat deploy --network polygonTestnet
+Nothing to compile
+No need to generate any newer typings.
 ----------------------------------------------------
 Deploying the CreateDAOToken
-deploying "CreateDAOToken" (tx: 0xbbbbe229f3340e30df5d2a4854a9cbbba955572962f80e8f86c203741b2de91e)...: deployed at 0x05bB07D3875AA5D05726B7993B846E2252aE6272 with 5234530 gas
-CreateDAOToken at 0x05bB07D3875AA5D05726B7993B846E2252aE6272
-deploying "CreateGitDAO" (tx: 0xbd7902a98ee277aad4f2a357160eaf23dcfca0a44c7ee8b910d68125a632f20a)...: deployed at 0x1465D39dFBC06B91C9Fe42fC6Cc642f62Be6916F with 1979183 gas
-CreateDAOToken at 0x1465D39dFBC06B91C9Fe42fC6Cc642f62Be6916F
-deploying "CreateDAOTimelock" (tx: 0x95702f50a147c47cfc259c4816264f39bb7612c46029d19afd60a6c4750f3a3a)...: deployed at 0xaFcbC84eE2F2543c88fdE38C9B0c28517dFe21fF with 3485667 gas
+deploying "CreateDAOToken" (tx: 0x9d4cbf8cd11d67d2a462e60924cdc6c2bca63212eb9acd1c8afc684d58b2327a)...: deployed at 0xC8cAE6f381d679a9A79E3ED4C64a6864f9a85541 with 5254516 gas
+CreateDAOToken at 0xC8cAE6f381d679a9A79E3ED4C64a6864f9a85541
+deploying "CreateGitDAO" (tx: 0x1621b70c885f1a55d983eb4203f4f7d32c3d83f05557c3fb34e2beb7b9aa407a)...: deployed at 0x0526818a27084d9d8B468d44D421FB309386872C with 1979183 gas
+CreateDAOToken at 0x0526818a27084d9d8B468d44D421FB309386872C
+reusing "CreateDAOTimelock" at 0xaFcbC84eE2F2543c88fdE38C9B0c28517dFe21fF
 CreateDAOToken at 0xaFcbC84eE2F2543c88fdE38C9B0c28517dFe21fF
 Deploying CreateDAO contract
-deploying "CreateDAO" (tx: 0xde9b20bf01e3256f24dd11e4cfc0fff6db40424a5c7463ccaeb15baf75fec224)...: deployed at 0x8843dE736048681115b6aF95F71674A263432C2E with 4718209 gas
-CreateDAO at 0x8843dE736048681115b6aF95F71674A263432C2E
+deploying "CreateDAO" (tx: 0x26ed487c38e04fba0da6c470ee049d29531136107fc65a00395517a88155ff30)...: deployed at 0xd91E5C25bD1F9284194d47Cf1Df29F52464879E9 with 4718209 gas
+CreateDAO at 0xd91E5C25bD1F9284194d47Cf1Df29F52464879E9
 Deploying DAOFactory
-DAOFactory at 0xBCD2F6aC5c04B6b8C1D3700B8Ae98609FB578830
+DAOFactory at 0x33ddc9cD01Be9f68830da11D38E202eA0e1A467f
 Verifying as well...
 + Verifying contract...
 Nothing to compile
 No need to generate any newer typings.
 Successfully submitted source code for contract
-contracts/factories/CreateDAOToken.sol:CreateDAOToken at 0x05bB07D3875AA5D05726B7993B846E2252aE6272
+contracts/factories/CreateDAOToken.sol:CreateDAOToken at 0xC8cAE6f381d679a9A79E3ED4C64a6864f9a85541
 for verification on the block explorer. Waiting for verification result...
 
 Successfully verified contract CreateDAOToken on Etherscan.
-https://mumbai.polygonscan.com/address/0x05bB07D3875AA5D05726B7993B846E2252aE6272#code
+https://mumbai.polygonscan.com/address/0xC8cAE6f381d679a9A79E3ED4C64a6864f9a85541#code
 + Verifying contract...
 Generating typings for: 42 artifacts in dir: typechain-types for target: ethers-v5
 Successfully generated 67 typings!
 Compiled 40 Solidity files successfully
 Successfully submitted source code for contract
-contracts/factories/CreateDAO.sol:CreateDAO at 0x8843dE736048681115b6aF95F71674A263432C2E
+contracts/factories/CreateDAO.sol:CreateDAO at 0xd91E5C25bD1F9284194d47Cf1Df29F52464879E9
 for verification on the block explorer. Waiting for verification result...
 
 Successfully verified contract CreateDAO on Etherscan.
-https://mumbai.polygonscan.com/address/0x8843dE736048681115b6aF95F71674A263432C2E#code
+https://mumbai.polygonscan.com/address/0xd91E5C25bD1F9284194d47Cf1Df29F52464879E9#code
 + Verifying contract...
 Nothing to compile
 No need to generate any newer typings.
 Successfully submitted source code for contract
-contracts/DAOFactory.sol:DAOFactory at 0xBCD2F6aC5c04B6b8C1D3700B8Ae98609FB578830
+contracts/DAOFactory.sol:DAOFactory at 0x33ddc9cD01Be9f68830da11D38E202eA0e1A467f
 for verification on the block explorer. Waiting for verification result...
 
 Successfully verified contract DAOFactory on Etherscan.
-https://mumbai.polygonscan.com/address/0xBCD2F6aC5c04B6b8C1D3700B8Ae98609FB578830#code
-✨  Done in 177.67s.
+https://mumbai.polygonscan.com/address/0x33ddc9cD01Be9f68830da11D38E202eA0e1A467f#code
+✨  Done in 165.25s.
 ```

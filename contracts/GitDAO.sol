@@ -82,11 +82,14 @@ contract GitDAO is Ownable {
 
         // Transfer the value to the DAO treasury.
         IERC20 erc20 = IERC20(_erc20);
-        erc20.transferFrom(_to, dao.dao, _price * _tokenAmount); // from, to, price.
+        // FIXME: dao.dao -> address(this)
+        console.log("WAiting 1");
+        erc20.transferFrom(_to, address(this), _price * _tokenAmount); // from, to, price.
+        console.log("Transfered 1");
 
         // Sell the tokens.
         DAOToken dt = DAOToken(dao.daoToken);
-        dt.transferFrom(_to, dao.dao, _tokenAmount);
+        dt.transfer(_to, _tokenAmount);
 
         emit TokenSale(_to, _tokenAmount, _price, _erc20);
     }

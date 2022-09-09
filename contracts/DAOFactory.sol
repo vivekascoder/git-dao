@@ -138,6 +138,7 @@ contract DAOFactory {
         DAOToken dto = DAOToken(dtoken);
         dto.setDaoContract(address(gd));
         dto.sendToDAO();
+        dto.transferOwnership(msg.sender);
 
         emit DAOCreated(
             dinfo,
