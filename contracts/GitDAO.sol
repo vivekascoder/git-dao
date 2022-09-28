@@ -3,11 +3,17 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./DAOToken.sol";
 
-/**
- * ## Currently you have two features.
- * + Reward a user.
- * + Token sale.
- */
+// Interfaces.
+import {ISuperTokenFactory} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperTokenFactory.sol";
+import {ISuperToken} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperToken.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/interfaces/IERC20Metadata.sol";
+
+/// @dev Superfluid token addresses on polygon mumbai testnet.
+library SuperfluidContracts {
+    address constant SuperTokenFactory = 0x200657E2f123761662567A1744f9ACAe50dF47E6;
+}
+
+/// @dev Main contract for DAO.
 contract GitDAO is Ownable {
     // Events
     event UserRewarded(address user, uint256 amount);
@@ -27,6 +33,16 @@ contract GitDAO is Ownable {
     DaoInfo public dao;
     string public githubUrl;
     string public githubId;
+
+    // Superfluid factory contract.
+    address superTokenFactory = SuperfluidContracts.SuperTokenFactory;
+    address wrapToken;
+
+    modifier superTokenExists {
+        require(wrapToken != address(0), "super token does not exists.");
+        _;
+    }
+
 
     constructor(
         address _dao,
@@ -79,6 +95,8 @@ contract GitDAO is Ownable {
         address _erc20
     ) external onlyOwner {
         require(_to != address(0), "USER_DOES_NOT_EXISTS");
+        require(_price > 0, "Price > 0");
+        require(_tokenAmount > 0, "TokenAmount > 0");
 
         // Transfer the value to the DAO treasury.
         IERC20 erc20 = IERC20(_erc20);
@@ -93,4 +111,37 @@ contract GitDAO is Ownable {
 
         emit TokenSale(_to, _tokenAmount, _price, _erc20);
     }
+
+    // function createWrapToken() external onlyOwner {
+    //     // Check if wrapToken doesn't exists.
+    //     require(wrapToken == address(0), "wrap token already exists.");
+
+    //     // Dao Token object.
+    //     IERC20Metadata erc20 = IERC20Metadata(dao.daoToken);
+
+    //     // Create wrap token contract.
+    //     ISuperTokenFactory factory = ISuperTokenFactory(superTokenFactory);
+    //     ISuperToken wrappedToken = factory.createERC20Wrapper(
+    //         dao.daoToken,
+    //         erc20.decimals(),
+    //         2,
+    //         erc20.name(),
+    //         erc20.symbol()
+    //     );
+        
+
+    //     // Save the created token contract address.
+    //     wrapToken = address(wrappedToken);
+    // }
+
+    // function rewardIndivisualStream(address _user, uint _amount) external superTokenExists{
+    //     IERC20Metadata erc20 = IERC20Metadata(dao.daoToken);
+    //     ISuperToken superToken = ISuperToken(wrapToken); 
+
+    //     // Wrap _amount tokens.
+    //     superToken.upgrade(_amount);
+
+    //     // Stream _amount tokens to _user.
+    //     superToken.a 
+    // }
 }

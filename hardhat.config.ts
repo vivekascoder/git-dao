@@ -57,7 +57,8 @@ const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
-      chainId: 31337,
+      // chainId: 31337,
+      // forking: { url: process.env.ALCHEMY_ETHEREUM_MAINNET || "" },
     },
     localhost: {
       chainId: 31337,

@@ -35,5 +35,8 @@
     "format": "yarn prettier --write .",
     "typechain": "yarn hardhat typechain",
     "ci:clean": "rm -rf ./artifacts ./cache .;types"
+  },
+  "dependencies": {
+    "@superfluid-finance/ethereum-contracts": "^1.4.0"
   }
 }
